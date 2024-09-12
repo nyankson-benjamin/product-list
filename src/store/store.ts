@@ -24,17 +24,17 @@ type Store = {
   decreaseQuantity: (id: number) => void;
   getCartItem: (id: number) => CartItem | undefined;
   removeFromCart: (id: number) => void;
-  loading: boolean; // Add loading state
+  loading: boolean;
 };
 
 export const useStore = create<Store>((set, get) => ({
   count: 1,
   data: [],
-  cart: [],
-  loading: false, // Initialize loading state
+  cart: JSON.parse(localStorage.getItem("cart") || "[]"), // Load cart from local storage
+  loading: false,
   inc: () => set((state) => ({ count: state.count + 1 })),
   getData: async () => {
-    set({ loading: true }); // Set loading to true before fetching data
+    set({ loading: true });
     try {
       const response = await fetch("https://dummyjson.com/products/category/groceries");
       const resData = await response.json();
@@ -42,7 +42,7 @@ export const useStore = create<Store>((set, get) => ({
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      set({ loading: false }); // Set loading to false after data is fetched or if an error occurs
+      set({ loading: false });
     }
   },
   addToCart: (id: number) =>
@@ -51,49 +51,51 @@ export const useStore = create<Store>((set, get) => ({
       if (product) {
         const existingItem = state.cart.find((item) => item.product.id === id);
         if (existingItem) {
-          return {
-            cart: state.cart.map((item) =>
-              item.product.id === id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-            ),
-          };
+          const updatedCart = state.cart.map((item) =>
+            item.product.id === id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+          localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to local storage
+          return { cart: updatedCart };
         } else {
-          return { cart: [...state.cart, { product, quantity: 1 }] };
+          const updatedCart = [...state.cart, { product, quantity: 1 }];
+          localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to local storage
+          return { cart: updatedCart };
         }
       }
-      return state; // If product not found, return the current state
+      return state;
     }),
   increaseQuantity: (id: number) =>
     set((state) => {
-      return {
-        cart: state.cart.map((item) =>
-          item.product.id === id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        ),
-      };
+      const updatedCart = state.cart.map((item) =>
+        item.product.id === id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to local storage
+      return { cart: updatedCart };
     }),
   decreaseQuantity: (id: number) =>
     set((state) => {
-      return {
-        cart: state.cart
-          .map((item) =>
-            item.product.id === id
-              ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
-              : item
-          )
-          .filter((item) => item.quantity > 0),
-      };
+      const updatedCart = state.cart
+        .map((item) =>
+          item.product.id === id
+            ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to local storage
+      return { cart: updatedCart };
     }),
   getCartItem: (id: number) => {
-    const state = get(); // Use the `get` function to access current state
+    const state = get();
     return state.cart.find((item) => item.product.id === id);
   },
   removeFromCart: (id: number) =>
     set((state) => {
-      return {
-        cart: state.cart.filter((item) => item.product.id !== id),
-      };
+      const updatedCart = state.cart.filter((item) => item.product.id !== id);
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to local storage
+      return { cart: updatedCart };
     }),
 }));
