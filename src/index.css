@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "RedHat-Italic";
+  src: url("/src/assets/fonts/RedHatText-Italic-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "RedHat";
+  src: url("/src/assets/fonts/RedHatText-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "RedHat-bold";
+  src: url("/assets/fonts/RedHatText-Bold.ttf") format("truetype");
+}
+
+body{
+  padding: 30px;
+  background-color: rgb(248, 246, 243);
+}
+
+/* Add this to your global CSS file */
+.scrollbar-hide {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
