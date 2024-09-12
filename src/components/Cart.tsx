@@ -6,7 +6,7 @@ import Button from "./buttons/Button";
 import Modal from "./Modal";
 import { useState } from "react";
 import CheckOutCard from "./CheckOutCard";
-import confirmed from "../assets/images/icon-order-confirmed.svg"
+import confirmed from "../assets/images/icon-order-confirmed.svg";
 export default function Cart() {
   const { cart, removeFromCart } = useStore();
   const [openModal, setOpenModal] = useState(false);
@@ -17,7 +17,7 @@ export default function Cart() {
   }
 
   const handleRemove = () => {
-    setOpenModal(false)
+    setOpenModal(false);
     cart.forEach((item) => {
       removeFromCart(item.product.id);
     });
@@ -28,13 +28,15 @@ export default function Cart() {
       <p className="font-redHatBold text-red-700 font-semibold">
         Your Cart ({cart?.length})
       </p>
-      {cart.map((cart) => (
-        <CartCard
-          key={cart?.product.id}
-          cart={cart?.product}
-          quantity={cart?.quantity}
-        />
-      ))}
+      <div className="h-[60vh] overflow-auto scrollbar-hide">
+        {cart.map((cart) => (
+          <CartCard
+            key={cart?.product.id}
+            cart={cart?.product}
+            quantity={cart?.quantity}
+          />
+        ))}
+      </div>
       {cart?.length > 0 && (
         <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center font-redHat text-red-900 py-3">
@@ -65,7 +67,7 @@ export default function Cart() {
         <img src={confirmed} alt="" />
         <p className="font-redHat font-extrabold text-xl">Order Confirmed</p>
         <p>We hope you enjoyed your food</p>
-        <div className="rounded-lg  bg-[#fcf9f5] mb-5 mt-3">
+        <div className="rounded-lg  bg-[#fcf9f5] mb-5 mt-3 h-[60vh] overflow-auto scrollbar-hide">
           {cart.map((item, index) => (
             <CheckOutCard
               key={item?.product.id}
